@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <cstdlib>
+#include <iostream>
 #include <vector>
 
 #include "perlin_noise.hpp"
@@ -37,10 +38,26 @@ public:
         perlin = siv::PerlinNoise(rand());
     }
 
-    void fillPerlin(int32_t octaves = 10, double stepSize = 0.05) {
-        for (int y = 0; y < height; ++y)
-            for (int x = 0; x < width; ++x)
-                terrain[y][x].height = perlin.octave2D_01(x * stepSize, y * stepSize, octaves);
+    void fillPerlin(int32_t octaves = 100, double stepSize = 0.01) {
+        double lower = 2.0;   // 1 is max of [0, 1], so 2 is bigger
+        double upper = -1.0;  // -1 because 0 is minimal val
+
+        // set noise of terrain
+        for (int y = 0; y < height; ++y) {
+            for (int x = 0; x < width; ++x) {
+                double noise = perlin.octave2D_01(x * stepSize, y * stepSize, octaves);
+                if (noise < lower) lower = noise;
+                if (noise > upper) upper = noise;
+                terrain[y][x].height = noise;
+            }
+        }
+
+        // rescale terrain so that its between [0, 1]
+        for (int y = 0; y < height; ++y) {
+            for (int x = 0; x < width; ++x) {
+                terrain[y][x].height = (terrain[y][x].height - lower) / (upper - lower);
+            }
+        }
     }
 
     uint getWidth() { return width; }

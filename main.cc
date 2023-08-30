@@ -11,8 +11,6 @@ int main() {
     Window window(model, 5);
     Controller controller(window, model);
 
-    model.fillPerlin(10);
-
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {

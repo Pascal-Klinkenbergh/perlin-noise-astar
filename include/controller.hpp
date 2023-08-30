@@ -60,7 +60,6 @@ public:
 
             case sf::Keyboard::R:
                 model.randomizePerlin();
-                model.fillPerlin();
                 model.setStart(nullptr);
                 model.setEnd(nullptr);
                 break;

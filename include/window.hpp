@@ -40,9 +40,19 @@ public:
         // set new color of pixels and draw
         for (int y = 0; y < model.getHeight(); ++y) {
             for (int x = 0; x < model.getWidth(); ++x) {
+                // get height of point
                 Model::Point* point = model.getPoint(x, y);
-                uchar height = (uchar)(point->height * 255);
-                pixels[y][x].setFillColor(sf::Color(height, height, height));
+                uchar colVal = (uchar)(point->height * 255);
+                sf::Color col(colVal, colVal, colVal);
+
+                // set different color for start and end
+                if (point == model.getStart())
+                    col = sf::Color::Green;
+                else if (point == model.getEnd())
+                    col = sf::Color::Red;
+
+                // set color of pixel and draw
+                pixels[y][x].setFillColor(col);
                 win.draw(pixels[y][x]);
             }
         }

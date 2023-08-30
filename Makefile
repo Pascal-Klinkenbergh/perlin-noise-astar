@@ -4,6 +4,11 @@ path: main.cc include/*.hpp
 run: path
 	./path
 
+
+.PHONY: format
+format:
+	clang-format -i main.cc include/*.hpp
+
 .PHONY: clean
 clean: 
 	rm path

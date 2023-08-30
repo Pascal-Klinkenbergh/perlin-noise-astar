@@ -1,19 +1,21 @@
+#include <cstdlib>
+
+#include "controller.hpp"
 #include "model.hpp"
 #include "window.hpp"
-#include "controller.hpp"
 
 int main() {
+    srand(time(NULL));
+
     Model model(200, 150);
     Window window(model, 5);
-
-    Controller controller(window);
+    Controller controller(window, model);
 
     model.fillPerlin(10);
 
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
-
             // handle all events by controller
             controller.handleEvent(event);
         }

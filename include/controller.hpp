@@ -50,12 +50,12 @@ public:
         switch (event.key.code) {
             case sf::Keyboard::S:
                 currentState = State::drawStart;
-                std::cout << "Start draw mode" << std::endl;
+                std::cout << "mode: start drawing" << std::endl;
                 break;
 
             case sf::Keyboard::E:
                 currentState = State::drawEnd;
-                std::cout << "End draw mode" << std::endl;
+                std::cout << "mode: end drawing" << std::endl;
                 break;
 
             case sf::Keyboard::R:

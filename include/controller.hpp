@@ -31,17 +31,17 @@ public:
 
     void handleMousePressEvent(sf::Event& event) {
         if (event.mouseButton.button == sf::Mouse::Left) {  // left click
-            auto coord = screenToModelCoordinates(event.mouseButton.x, event.mouseButton.y);
-            uint modelX = coord.first;
-            uint modelY = coord.second;
+
+            uint x = event.mouseButton.x / window.getPixelSize();
+            uint y = event.mouseButton.y / window.getPixelSize();
 
             if (currentState == State::drawStart) {
                 // set start point
-                model.setStart(model.getPoint(modelX, modelY));
+                model.setStart(model.getPoint(x, y));
 
             } else if (currentState == State::drawEnd) {
                 // set end point
-                model.setEnd(model.getPoint(modelX, modelY));
+                model.setEnd(model.getPoint(x, y));
             }
         }
     }
@@ -71,12 +71,6 @@ public:
             default:
                 break;
         }
-    }
-
-    // translate the screen coordinate into model coordinates
-    std::pair<uint, uint> screenToModelCoordinates(int x, int y) {
-        uint pSize = window.getPixelSize();
-        return {(uint)(x / pSize), (uint)(y / pSize)};
     }
 
     enum State {

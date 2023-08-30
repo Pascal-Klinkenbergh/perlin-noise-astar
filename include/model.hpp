@@ -56,17 +56,18 @@ public:
     Point* getEnd() { return end; }
 
 private:
-    uint octaves = 10;         // how many octaves
-    double stepSize = 0.01;    // multiplier for x and y values, to reduce step size
-    double persistence = 0.6;  // how much the value of the next octave is reduced
+    float heightCostMult = 2.f;  // multiplier for heigth cost in 3d euclidean distance calculation
+    uint octaves = 10;           // how many octaves
+    double stepSize = 0.01;      // multiplier for x and y values, to reduce step size
+    double persistence = 0.6;    // how much the value of the next octave is reduced
 
-    const uint width, height;
-    vector<vector<Point>> terrain;
+    const uint width, height;       // size of the terrain
+    vector<vector<Point>> terrain;  // terrain itself
 
-    Point* start = nullptr;
-    Point* end = nullptr;
+    Point* start = nullptr;  // search from here
+    Point* end = nullptr;    // find path from start to end
 
-    siv::PerlinNoise perlin;
+    siv::PerlinNoise perlin;  // current noise generator
 
     void fillPerlin() {
         double lower = 2.0;   // 1 is max of [0, 1], so 2 is bigger
@@ -88,5 +89,21 @@ private:
                 terrain[y][x].height = (terrain[y][x].height - lower) / (upper - lower);
             }
         }
+    }
+
+    // euclidean distance from p to end
+    float heuristic(Point* p) {
+        float dx = float(p->x) - float(end->x);
+        float dy = float(p->y) - float(end->y);
+        return sqrtf(dx * dx + dy * dy);
+    }
+
+    // euclidean distance between points where height is the 3rd dimension
+    float distance(Point* p1, Point* p2) {
+        float dx = float(p1->x) - float(p2->x);
+        float dy = float(p1->y) - float(p2->y);
+        float dz = float(p1->height) - float(p2->height);
+        dz *= heightCostMult;
+        return sqrtf(dx * dx + dy * dy + dz * dz);
     }
 };

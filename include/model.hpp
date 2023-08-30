@@ -92,17 +92,17 @@ private:
     }
 
     // euclidean distance from p to end
-    float heuristic(Point* p) {
-        float dx = float(p->x) - float(end->x);
-        float dy = float(p->y) - float(end->y);
+    float heuristic(Point& p) {
+        float dx = float(p.x) - float(end->x);
+        float dy = float(p.y) - float(end->y);
         return sqrtf(dx * dx + dy * dy);
     }
 
     // euclidean distance between points where height is the 3rd dimension
-    float distance(Point* p1, Point* p2) {
-        float dx = float(p1->x) - float(p2->x);
-        float dy = float(p1->y) - float(p2->y);
-        float dz = float(p1->height) - float(p2->height);
+    float distance(Point& p1, Point& p2) {
+        float dx = float(p1.x) - float(p2.x);
+        float dy = float(p1.y) - float(p2.y);
+        float dz = float(p1.height) - float(p2.height);
         dz *= heightCostMult;
         return sqrtf(dx * dx + dy * dy + dz * dz);
     }

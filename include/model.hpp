@@ -56,9 +56,9 @@ public:
     Point* getEnd() { return end; }
 
 private:
-    uint octaves = 20;
-    double stepSize = 0.01;
-    double persistence = 0.5;
+    uint octaves = 10;         // how many octaves
+    double stepSize = 0.01;    // multiplier for x and y values, to reduce step size
+    double persistence = 0.6;  // how much the value of the next octave is reduced
 
     const uint width, height;
     vector<vector<Point>> terrain;

@@ -16,12 +16,21 @@ public:
         : width(width),
           height(height),
           terrain(height, vector<Point>(width, Point{})),
-          perlin(rand()) {}
+          perlin(rand()) {
+        // set coordinated of points
+        for (int y = 0; y < height; ++y) {
+            for (int x = 0; x < height; ++x) {
+                terrain[y][x].x = x;
+                terrain[y][x].y = y;
+            }
+        }
+    }
 
     struct Point {
         float height = 0.f;         // between [0, 1]
         float distance = INFINITY;  // distance to start
         bool visited = false;       // ignore when visited before
+        uint x = 0, y = 0;
     };
 
     void randomizePerlin() {

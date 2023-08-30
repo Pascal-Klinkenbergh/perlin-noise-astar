@@ -20,7 +20,7 @@ public:
           perlin(rand()) {
         // set coordinated of points
         for (int y = 0; y < height; ++y) {
-            for (int x = 0; x < height; ++x) {
+            for (int x = 0; x < width; ++x) {
                 terrain[y][x].x = x;
                 terrain[y][x].y = y;
             }

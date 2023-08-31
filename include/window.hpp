@@ -56,8 +56,7 @@ public:
 
                     // draw visited points in a greener shade
                     if (point->visited) {
-                        col.r *= 0.8;
-                        col.b *= 0.9;
+                        col.r *= 0.7;
                     }
 
                     img.setPixel(x, y, col);
@@ -66,9 +65,9 @@ public:
         }
 
         Model::Point* p = model.getBest();
-        while (p != nullptr) {
-            if (p != model.getEnd() || p != model.getStart())
-                img.setPixel(p->x, p->y, sf::Color::Blue);
+        while (p) {
+            if (p != model.getEnd() && p != model.getStart())
+                img.setPixel(p->x, p->y, sf::Color::Magenta);
             p = p->prev;
         }
 

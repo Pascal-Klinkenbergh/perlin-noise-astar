@@ -1,6 +1,8 @@
 
 # Perlin noise A* path finder
 
+![path example](img.png)
+
 ## Controls
 
 leftClick - draw start \

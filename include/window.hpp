@@ -56,9 +56,8 @@ public:
 
                     // draw visited points in a greener shade
                     if (point->visited) {
-                        col.a = 190;
-                        col.r *= 0.3;
-                        col.b *= 0.3;
+                        col.r *= 0.8;
+                        col.b *= 0.9;
                     }
 
                     img.setPixel(x, y, col);

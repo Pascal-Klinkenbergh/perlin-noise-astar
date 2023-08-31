@@ -52,7 +52,7 @@ public:
 
     void regenerateTerrain() {
         perlin.reseed(rand());  // new noise
-        fillPerlin();                       // calc new terrain
+        fillPerlin();           // calc new terrain
         clearPathState();
     }
 
@@ -137,9 +137,9 @@ public:
 
 private:
     float heightCostMult = 500.f;  // multiplier for heigth cost in 3d euclidean distance calculation
-    uint octaves = 10;              // how many octaves
-    double stepSize = 0.03;         // multiplier for x and y values, to reduce step size
-    double persistence = 0.5;       // how much the value of the next octave is reduced
+    uint octaves = 20;             // how many octaves
+    double stepSize = 0.03;        // multiplier for x and y values, to reduce step size
+    double persistence = 0.4;      // how much the value of the next octave is reduced
 
     const uint width, height;       // size of the terrain
     vector<vector<Point>> terrain;  // terrain itself
@@ -175,7 +175,7 @@ private:
 
     // euclidean distance from p to end
     float heuristic(Point* p) {
-        return distance(p, end);  // TODO: consider a better heuristic.. ?
+        return distance(p, end);
     }
 
     // euclidean distance between points where height is the 3rd dimension

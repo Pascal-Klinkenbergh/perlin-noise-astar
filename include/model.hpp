@@ -46,14 +46,17 @@ public:
         Model* model;
 
         bool operator()(Point* l, Point* r) {
-            return (l->distance + model->heuristic(*l)) > (r->distance + model->heuristic(*r));
+            return (l->distance + model->heuristic(l)) > (r->distance + model->heuristic(r));
         }
     };
 
     void regenerateTerrain() {
-        perlin = siv::PerlinNoise(rand());  // new noise
+        perlin.reseed(rand());  // new noise
         fillPerlin();                       // calc new terrain
+        clearPathState();
+    }
 
+    void clearPathState() {
         // remove start and end
         start = nullptr;
         end = nullptr;
@@ -71,6 +74,54 @@ public:
         queue = std::priority_queue<Point*, vector<Point*>, PointCompare>(PointCompare(this));
     }
 
+    void setupPathfinding() {
+        start->distance = 0;
+        queue.push(start);
+    }
+
+    Point* getBest() {
+        if (queue.size())
+            return queue.top();
+        else
+            return nullptr;
+    }
+
+    bool iteratePathfinding() {
+        // TODO: füge ich Points doppelt hinzu????
+
+        // get top element from queue
+        Point* active = queue.top();
+
+        // if the active Point is the end, we're done!
+        if (active == end)
+            return true;
+
+        queue.pop();
+
+        // get neighbors
+        auto neighbors = getNeighbors(active);
+
+        for (auto& p : neighbors) {
+            if (p->visited) continue;  // skip visited Points
+
+            // new distanc to p
+            float dist = active->distance + distance(active, p);
+
+            // if distance is lower
+            if (dist < p->distance) {
+                p->distance = dist;
+                p->prev = active;
+
+                queue.push(p);  // TODO: Here!
+            }
+        }
+
+        // Point is done, don't visit it anymore
+        active->visited = true;
+
+        return false;
+    }
+
     uint getWidth() { return width; }
     uint getHeight() { return height; }
 
@@ -85,10 +136,10 @@ public:
     Point* getEnd() { return end; }
 
 private:
-    float heightCostMult = 2.f;  // multiplier for heigth cost in 3d euclidean distance calculation
-    uint octaves = 10;           // how many octaves
-    double stepSize = 0.01;      // multiplier for x and y values, to reduce step size
-    double persistence = 0.6;    // how much the value of the next octave is reduced
+    float heightCostMult = 500.f;  // multiplier for heigth cost in 3d euclidean distance calculation
+    uint octaves = 10;              // how many octaves
+    double stepSize = 0.03;         // multiplier for x and y values, to reduce step size
+    double persistence = 0.5;       // how much the value of the next octave is reduced
 
     const uint width, height;       // size of the terrain
     vector<vector<Point>> terrain;  // terrain itself
@@ -123,25 +174,30 @@ private:
     }
 
     // euclidean distance from p to end
-    float heuristic(Point& p) {
-        return distance(p, *end);  // TODO: consider a better heuristic.. ?
+    float heuristic(Point* p) {
+        float h = heightCostMult;
+
+        heightCostMult = 1.f;
+        float dist = distance(p, end);  // TODO: consider a better heuristic.. ?
+        heightCostMult = h;
+        return dist;
     }
 
     // euclidean distance between points where height is the 3rd dimension
-    float distance(Point& p1, Point& p2) {
-        float dx = float(p1.x) - float(p2.x);
-        float dy = float(p1.y) - float(p2.y);
-        float dz = float(p1.height) - float(p2.height);
+    float distance(Point* p1, Point* p2) {
+        float dx = float(p1->x) - float(p2->x);
+        float dy = float(p1->y) - float(p2->y);
+        float dz = float(p1->height) - float(p2->height);
         dz *= heightCostMult;
         return sqrtf(dx * dx + dy * dy + dz * dz);
     }
 
     // get neighbors of point p
-    vector<Point*> neighbors(Point& p) {
+    vector<Point*> getNeighbors(Point* p) {
         vector<Point*> res;
 
-        uint x = p.x;
-        uint y = p.y;
+        uint x = p->x;
+        uint y = p->y;
 
         if (y > 0) {
             res.push_back(&terrain[y - 1][x]);

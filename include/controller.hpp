@@ -10,12 +10,6 @@ class Controller {
 public:
     Controller(Window& window, Model& model) : window(window), model(model) {}
 
-    enum State {
-        drawStart,
-        drawEnd,
-        pathfinding,
-    };
-
     void handleEvent(sf::Event& event) {
         // distribute events to specialized handler functions
         switch (event.type) {
@@ -37,51 +31,31 @@ public:
     }
 
     void handleMousePressEvent(sf::Event& event) {
-        if (event.mouseButton.button == sf::Mouse::Left) {  // left click
+        uint x = event.mouseButton.x / window.getPixelSize();
+        uint y = event.mouseButton.y / window.getPixelSize();
 
-            uint x = event.mouseButton.x / window.getPixelSize();
-            uint y = event.mouseButton.y / window.getPixelSize();
+        // TODO: was wenn neuer Start oder Ende, queue löschen und state reset?
 
-            if (currentState == State::drawStart) {
-                // set start point
-                model.setStart(model.getPoint(x, y));
-
-            } else if (currentState == State::drawEnd) {
-                // set end point
-                model.setEnd(model.getPoint(x, y));
-            }
+        if (event.mouseButton.button == sf::Mouse::Left) {  // set start
+            model.setStart(model.getPoint(x, y));
+        } else if (event.mouseButton.button == sf::Mouse::Right) {  // set end
+            model.setEnd(model.getPoint(x, y));
         }
-    }
-
-    void displayMode(std::string mode) {
-        std::cout << "Mode: " << mode << std::endl;
     }
 
     void handleKeyPressEvent(sf::Event& event) {
         switch (event.key.code) {
-            case sf::Keyboard::S:
-                currentState = State::drawStart;
-                displayMode("start drawing");
-                break;
-
-            case sf::Keyboard::E:
-                currentState = State::drawEnd;
-                displayMode("end drawing");
-                break;
-
             case sf::Keyboard::P:
                 if (model.getEnd() && model.getStart()) {
-                    currentState = State::pathfinding;
-                    displayMode("pathfinding");
-                } else {
+                    model.setupPathfinding();
+                    while (!model.iteratePathfinding())
+                        ;
+                } else
                     std::cout << "Please select a start and end point first" << std::endl;
-                }
                 break;
 
             case sf::Keyboard::R:
                 model.regenerateTerrain();
-                displayMode("start drawing");
-                currentState = State::drawStart;
                 break;
 
             case sf::Keyboard::Q:
@@ -96,5 +70,4 @@ public:
 private:
     Window& window;
     Model& model;
-    State currentState = State::drawStart;
 };

@@ -66,6 +66,13 @@ public:
             }
         }
 
+        Model::Point* p = model.getBest();
+        while (p != nullptr) {
+            if (p != model.getEnd() || p != model.getStart())
+                img.setPixel(p->x, p->y, sf::Color::Blue);
+            p = p->prev;
+        }
+
         // update texture
         texture.update(img);
 

@@ -175,12 +175,7 @@ private:
 
     // euclidean distance from p to end
     float heuristic(Point* p) {
-        float h = heightCostMult;
-
-        heightCostMult = 1.f;
-        float dist = distance(p, end);  // TODO: consider a better heuristic.. ?
-        heightCostMult = h;
-        return dist;
+        return distance(p, end);  // TODO: consider a better heuristic.. ?
     }
 
     // euclidean distance between points where height is the 3rd dimension

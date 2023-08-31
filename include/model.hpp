@@ -3,6 +3,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
+#include <queue>
 #include <vector>
 
 #include "perlin_noise.hpp"
@@ -17,7 +18,8 @@ public:
         : width(width),
           height(height),
           terrain(height, vector<Point>(width, Point{})),
-          perlin(rand()) {
+          perlin(rand()),
+          queue(PointCompare(this)) {
         // set coordinated of points
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
@@ -38,9 +40,31 @@ public:
         uint x = 0, y = 0;
     };
 
+    struct PointCompare {
+        PointCompare(Model* model) : model(model) {}
+
+        Model* model;
+
+        bool operator()(Point* l, Point* r) {
+            return (l->distance + model->heuristic(*l)) > (r->distance + model->heuristic(*r));
+        }
+    };
+
     void randomizePerlin() {
         perlin = siv::PerlinNoise(rand());  // new noise
         fillPerlin();                       // calc new terrain
+
+        // cleanup Points
+        for (auto& row : terrain) {
+            for (auto& p : row) {
+                p.distance = INFINITY;
+                p.prev = nullptr;
+                p.visited = false;
+            }
+        }
+
+        // clean queue
+        queue = std::priority_queue<Point*, vector<Point*>, PointCompare>(PointCompare(this));
     }
 
     uint getWidth() { return width; }
@@ -70,6 +94,8 @@ private:
 
     siv::PerlinNoise perlin;  // current noise generator
 
+    std::priority_queue<Point*, vector<Point*>, PointCompare> queue;  // keep track of best Point for shortest path
+
     void fillPerlin() {
         double lower = 2.0;   // 1 is max of [0, 1], so 2 is bigger
         double upper = -1.0;  // -1 because 0 is minimal val
@@ -94,7 +120,7 @@ private:
 
     // euclidean distance from p to end
     float heuristic(Point& p) {
-        return distance(p, *end); // TODO: consider a better heuristic.. ?
+        return distance(p, *end);  // TODO: consider a better heuristic.. ?
     }
 
     // euclidean distance between points where height is the 3rd dimension

@@ -106,4 +106,57 @@ private:
         dz *= heightCostMult;
         return sqrtf(dx * dx + dy * dy + dz * dz);
     }
+
+    // get neighbors of point p
+    vector<Point*> neighbors(Point& p) {
+        vector<Point*> res;
+
+        uint x = p.x;
+        uint y = p.y;
+
+        if (y > 0) {
+            res.push_back(&terrain[y - 1][x]);
+
+            if (y < height - 1) {
+                res.push_back(&terrain[y + 1][x]);
+
+                if (x > 0) {
+                    res.push_back(&terrain[y - 1][x - 1]);
+                    res.push_back(&terrain[y][x - 1]);
+                    res.push_back(&terrain[y + 1][x - 1]);
+                }
+
+                if (x < width - 1) {
+                    res.push_back(&terrain[y - 1][x + 1]);
+                    res.push_back(&terrain[y][x + 1]);
+                    res.push_back(&terrain[y + 1][x + 1]);
+                }
+
+            } else {
+                if (x > 0) {
+                    res.push_back(&terrain[y - 1][x - 1]);
+                    res.push_back(&terrain[y][x - 1]);
+                }
+
+                if (x < width - 1) {
+                    res.push_back(&terrain[y - 1][x + 1]);
+                    res.push_back(&terrain[y][x + 1]);
+                }
+            }
+        } else {
+            res.push_back(&terrain[y + 1][x]);
+
+            if (x > 0) {
+                res.push_back(&terrain[y][x - 1]);
+                res.push_back(&terrain[y + 1][x - 1]);
+            }
+
+            if (x < width - 1) {
+                res.push_back(&terrain[y][x + 1]);
+                res.push_back(&terrain[y + 1][x + 1]);
+            }
+        }
+
+        return res;
+    }
 };

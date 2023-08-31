@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <string>
 #include <utility>
 
 #include "model.hpp"
@@ -46,21 +47,30 @@ public:
         }
     }
 
+    void displayMode(std::string mode) {
+        std::cout << "Mode: " << mode << std::endl;
+    }
+
     void handleKeyPressEvent(sf::Event& event) {
         switch (event.key.code) {
             case sf::Keyboard::S:
                 currentState = State::drawStart;
-                std::cout << "mode: start drawing" << std::endl;
+                displayMode("start drawing");
                 break;
 
             case sf::Keyboard::E:
                 currentState = State::drawEnd;
-                std::cout << "mode: end drawing" << std::endl;
+                displayMode("end drawing");
                 break;
 
             case sf::Keyboard::P:
-                currentState = State::pathfinding;
-                std::cout << "mode: pathfinding" << std::endl;
+
+                if (model.getEnd() && model.getStart()) {
+                    currentState = State::pathfinding;
+                    displayMode("pathfinding");
+                } else {
+                    std::cout << "Please select a start and end point first" << std::endl;
+                }
                 break;
 
             case sf::Keyboard::R:

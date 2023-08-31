@@ -10,6 +10,12 @@ class Controller {
 public:
     Controller(Window& window, Model& model) : window(window), model(model) {}
 
+    enum State {
+        drawStart,
+        drawEnd,
+        pathfinding,
+    };
+
     void handleEvent(sf::Event& event) {
         // distribute events to specialized handler functions
         switch (event.type) {
@@ -73,9 +79,9 @@ public:
                 break;
 
             case sf::Keyboard::R:
-                model.randomizePerlin();
-                model.setStart(nullptr);
-                model.setEnd(nullptr);
+                model.regenerateTerrain();
+                displayMode("start drawing");
+                currentState = State::drawStart;
                 break;
 
             case sf::Keyboard::Q:
@@ -86,12 +92,6 @@ public:
                 break;
         }
     }
-
-    enum State {
-        drawStart,
-        drawEnd,
-        pathfinding,
-    };
 
 private:
     Window& window;

@@ -50,9 +50,13 @@ public:
         }
     };
 
-    void randomizePerlin() {
+    void regenerateTerrain() {
         perlin = siv::PerlinNoise(rand());  // new noise
         fillPerlin();                       // calc new terrain
+
+        // remove start and end
+        start = nullptr;
+        end = nullptr;
 
         // cleanup Points
         for (auto& row : terrain) {

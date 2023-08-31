@@ -34,7 +34,9 @@ public:
         uint x = event.mouseButton.x / window.getPixelSize();
         uint y = event.mouseButton.y / window.getPixelSize();
 
-        // TODO: was wenn neuer Start oder Ende, queue löschen und state reset?
+        // if theres already a path, clear first
+        if (model.getBest())
+            model.clearPathState();
 
         if (event.mouseButton.button == sf::Mouse::Left) {  // set start
             model.setStart(model.getPoint(x, y));

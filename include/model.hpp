@@ -54,13 +54,11 @@ public:
         perlin.reseed(rand());  // new noise
         fillPerlin();           // calc new terrain
         clearPathState();
+        start = nullptr;
+        end = nullptr;
     }
 
     void clearPathState() {
-        // remove start and end
-        start = nullptr;
-        end = nullptr;
-
         // cleanup Points
         for (auto& row : terrain) {
             for (auto& p : row) {

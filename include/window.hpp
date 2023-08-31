@@ -37,6 +37,8 @@ public:
     }
 
     void render() {
+        win.clear(sf::Color::White);
+
         // update pixels on img with model
         for (int y = 0; y < model.getHeight(); ++y) {
             for (int x = 0; x < model.getWidth(); ++x) {
@@ -50,7 +52,16 @@ public:
                     img.setPixel(x, y, sf::Color::Red);
                 else {
                     uchar colVal = (uchar)(point->height * 255);
-                    img.setPixel(x, y, sf::Color(colVal, colVal, colVal));
+                    sf::Color col(colVal, colVal, colVal);
+
+                    // draw visited points in a greener shade
+                    if (point->visited) {
+                        col.a = 190;
+                        col.r *= 0.3;
+                        col.b *= 0.3;
+                    }
+
+                    img.setPixel(x, y, col);
                 }
             }
         }

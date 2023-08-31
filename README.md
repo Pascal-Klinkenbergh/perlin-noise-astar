@@ -5,6 +5,6 @@
 
 leftClick - draw start \
 rightClick - draw end \
-p - calc path \
-r - regenerate new terrain \
+space - calc path \
+r - generate new terrain \
 q - quit

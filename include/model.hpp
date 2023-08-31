@@ -85,8 +85,6 @@ public:
     }
 
     bool iteratePathfinding() {
-        // TODO: füge ich Points doppelt hinzu????
-
         // get top element from queue
         Point* active = queue.top();
 
@@ -109,8 +107,7 @@ public:
             if (dist < p->distance) {
                 p->distance = dist;
                 p->prev = active;
-
-                queue.push(p);  // TODO: Here!
+                queue.push(p);  // insertions of same pointer again? Yes, but don't care..
             }
         }
 
@@ -134,7 +131,7 @@ public:
     Point* getEnd() { return end; }
 
 private:
-    float heightCostMult = 500.f;  // multiplier for heigth cost in 3d euclidean distance calculation
+    float heightCostMult = 200.f;  // multiplier for heigth cost in 3d euclidean distance calculation
     uint octaves = 20;             // how many octaves
     double stepSize = 0.03;        // multiplier for x and y values, to reduce step size
     double persistence = 0.4;      // how much the value of the next octave is reduced

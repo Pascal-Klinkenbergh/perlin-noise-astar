@@ -47,7 +47,7 @@ public:
 
     void handleKeyPressEvent(sf::Event& event) {
         switch (event.key.code) {
-            case sf::Keyboard::P:
+            case sf::Keyboard::Space:
                 if (model.getEnd() && model.getStart()) {
                     model.setupPathfinding();
                     while (!model.iteratePathfinding())

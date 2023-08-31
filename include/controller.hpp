@@ -58,6 +58,11 @@ public:
                 std::cout << "mode: end drawing" << std::endl;
                 break;
 
+            case sf::Keyboard::P:
+                currentState = State::pathfinding;
+                std::cout << "mode: pathfinding" << std::endl;
+                break;
+
             case sf::Keyboard::R:
                 model.randomizePerlin();
                 model.setStart(nullptr);
@@ -76,6 +81,7 @@ public:
     enum State {
         drawStart,
         drawEnd,
+        pathfinding,
     };
 
 private:

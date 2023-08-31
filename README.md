@@ -3,8 +3,12 @@
 
 ## Controls
 
-q - quit \
+q - quit
+
 s - set start drawing mode \
 e - set end drawing mode \
-r - regenerate new terrain \
-leftclick - draw start/end point
+p - pathfinding mode
+
+r - regenerate new terrain
+
+leftclick - draw start/end point, in start/end drawing mode only

@@ -34,6 +34,7 @@ public:
         float height = 0.f;         // between [0, 1]
         float distance = INFINITY;  // distance to start
         bool visited = false;       // ignore when visited before
+        Point* prev = nullptr;      // previous point for shortest path
         uint x = 0, y = 0;
     };
 
@@ -93,9 +94,7 @@ private:
 
     // euclidean distance from p to end
     float heuristic(Point& p) {
-        float dx = float(p.x) - float(end->x);
-        float dy = float(p.y) - float(end->y);
-        return sqrtf(dx * dx + dy * dy);
+        return distance(p, *end); // TODO: consider a better heuristic.. ?
     }
 
     // euclidean distance between points where height is the 3rd dimension

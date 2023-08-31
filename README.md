@@ -10,3 +10,10 @@ rightClick - draw end \
 space - calc path \
 r - generate new terrain \
 q - quit
+
+
+## Requirements
+
+* sfml
+
+`make run` to start

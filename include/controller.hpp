@@ -64,7 +64,6 @@ public:
                 break;
 
             case sf::Keyboard::P:
-
                 if (model.getEnd() && model.getStart()) {
                     currentState = State::pathfinding;
                     displayMode("pathfinding");

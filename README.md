@@ -17,3 +17,11 @@ q - quit
 * sfml
 
 `make run` to start
+
+
+## Ideas
+
+* make lower levels faster traversible and upper slower
+* GUI for levels and perlin params
+* Step through path iterations
+* zoom in and see distance and heuristics

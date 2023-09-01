@@ -135,6 +135,7 @@ private:
     uint octaves = 20;             // how many octaves
     double stepSize = 0.03;        // multiplier for x and y values, to reduce step size
     double persistence = 0.4;      // how much the value of the next octave is reduced
+    uint levels = 16;
 
     const uint width, height;       // size of the terrain
     vector<vector<Point>> terrain;  // terrain itself
@@ -164,6 +165,13 @@ private:
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
                 terrain[y][x].height = (terrain[y][x].height - lower) / (upper - lower);
+            }
+        }
+
+        // cluster terrain into levels
+        for (int y = 0; y < height; ++y) {
+            for (int x = 0; x < width; ++x) {
+                terrain[y][x].height = (int(terrain[y][x].height * levels)) / float(levels);
             }
         }
     }

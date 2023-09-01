@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <queue>
+#include <set>
 #include <vector>
 
 #include "perlin_noise.hpp"
@@ -19,7 +20,7 @@ public:
           height(height),
           terrain(height, vector<Point>(width, Point{})),
           perlin(rand()),
-          queue(PointCompare(this)) {
+          heap(PointCompare(this)) {
         // set coordinated of points
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
@@ -45,8 +46,8 @@ public:
 
         Model* model;
 
-        bool operator()(Point* l, Point* r) {
-            return (l->distance + model->heuristic(l)) > (r->distance + model->heuristic(r));
+        bool operator()(const Point* l, const Point* r) const {
+            return (l->distance + model->heuristic(l)) < (r->distance + model->heuristic(r));
         }
     };
 
@@ -69,30 +70,30 @@ public:
         }
 
         // clean queue
-        queue = std::priority_queue<Point*, vector<Point*>, PointCompare>(PointCompare(this));
+        heap.clear();
     }
 
     void setupPathfinding() {
         start->distance = 0;
-        queue.push(start);
+        heap.insert(start);
     }
 
     Point* getBest() {
-        if (queue.size())
-            return queue.top();
+        if (heap.size())
+            return *heap.begin();
         else
             return nullptr;
     }
 
     bool iteratePathfinding() {
         // get top element from queue
-        Point* active = queue.top();
+        Point* active = *heap.begin();
 
         // if the active Point is the end, we're done!
         if (active == end)
             return true;
 
-        queue.pop();
+        heap.erase(heap.begin());
 
         // get neighbors
         auto neighbors = getNeighbors(active);
@@ -107,7 +108,14 @@ public:
             if (dist < p->distance) {
                 p->distance = dist;
                 p->prev = active;
-                queue.push(p);  // insertions of same pointer again? Yes, but don't care..
+
+                // We have to remove the older point first and insert it again
+                // in order to reorganize the set with the new point value,
+                // since if we would just insert the already existing point,
+                // the set would not reorganize itself.
+                if (heap.contains(p))
+                    heap.erase(p);
+                heap.insert(p);
             }
         }
 
@@ -145,7 +153,7 @@ private:
 
     siv::PerlinNoise perlin;  // current noise generator
 
-    std::priority_queue<Point*, vector<Point*>, PointCompare> queue;  // keep track of best Point for shortest path
+    std::set<Point*, PointCompare> heap;
 
     void fillPerlin() {
         double lower = 2.0;   // 1 is max of [0, 1], so 2 is bigger
@@ -177,12 +185,12 @@ private:
     }
 
     // euclidean distance from p to end
-    float heuristic(Point* p) {
+    float heuristic(const Point* p) {
         return distance(p, end);
     }
 
     // euclidean distance between points where height is the 3rd dimension
-    float distance(Point* p1, Point* p2) {
+    float distance(const Point* p1, const Point* p2) {
         float dx = float(p1->x) - float(p2->x);
         float dy = float(p1->y) - float(p2->y);
         float dz = float(p1->height) - float(p2->height);
@@ -191,7 +199,7 @@ private:
     }
 
     // get neighbors of point p
-    vector<Point*> getNeighbors(Point* p) {
+    vector<Point*> getNeighbors(const Point* p) {
         vector<Point*> res;
 
         uint x = p->x;

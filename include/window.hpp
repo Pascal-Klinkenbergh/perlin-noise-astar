@@ -37,8 +37,6 @@ public:
     }
 
     void render() {
-        win.clear(sf::Color::White);
-
         // update pixels on img with model
         for (int y = 0; y < model.getHeight(); ++y) {
             for (int x = 0; x < model.getWidth(); ++x) {
@@ -64,6 +62,7 @@ public:
             }
         }
 
+        // draw best path
         Model::Point* p = model.getBest();
         while (p) {
             if (p != model.getEnd() && p != model.getStart())

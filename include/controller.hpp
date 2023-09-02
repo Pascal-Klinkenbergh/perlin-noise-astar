@@ -11,17 +11,16 @@ public:
     Controller(Window& window, Model& model) : window(window), model(model) {}
 
     void handleEvent(sf::Event& event) {
-        // distribute events to specialized handler functions
         switch (event.type) {
-            case sf::Event::Closed:  // window close button
+            case sf::Event::Closed:
                 window.close();
                 break;
 
-            case sf::Event::KeyPressed:  // key pressed
+            case sf::Event::KeyPressed:
                 handleKeyPressEvent(event);
                 break;
 
-            case sf::Event::MouseButtonPressed:  // mouse button pressed
+            case sf::Event::MouseButtonPressed:
                 handleMousePressEvent(event);
                 break;
 

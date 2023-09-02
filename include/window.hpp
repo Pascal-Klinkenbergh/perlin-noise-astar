@@ -5,15 +5,15 @@
 
 #include "model.hpp"
 
-typedef unsigned int uint;
 using std::vector;
 
 class Window {
 public:
-    Window(Model& model, uint pixelSize)
-        : model(model),
-          pixelSize(pixelSize),
-          win(sf::VideoMode(model.getWidth() * pixelSize, model.getHeight() * pixelSize), "Path", sf::Style::Titlebar | sf::Style::Close) {
+    Window(Model& model, int pixelSize)
+        : pixelSize(pixelSize),
+          model(model),
+          win(sf::VideoMode(model.getWidth() * pixelSize, model.getHeight() * pixelSize), "Path", sf::Style::Titlebar | sf::Style::Close),
+          view(win.getDefaultView()) {
         // set fps
         win.setFramerateLimit(60);
 
@@ -37,6 +37,8 @@ public:
     }
 
     void render() {
+        win.clear(sf::Color::Black);
+
         // update pixels on img with model
         for (int y = 0; y < model.getHeight(); ++y) {
             for (int x = 0; x < model.getWidth(); ++x) {
@@ -73,21 +75,37 @@ public:
         // update texture
         texture.update(img);
 
-        // draw sprite that has that texture
+        // draw sprite to screen buffer
         win.draw(sprite);
 
         // final drawing to screen
         win.display();
     }
 
-    uint getPixelSize() {
+    void moveView(sf::Vector2f delta) {
+        view.move(delta);
+        win.setView(view);
+    }
+
+    sf::Vector2f mapPixelToCoords(const sf::Vector2i& point) {
+        return win.mapPixelToCoords(point);
+    }
+
+    void adjustZoom(float delta) {
+        view.zoom(powf(1.1, -delta));
+        win.setView(view);
+    }
+
+    int getPixelSize() {
         return pixelSize;
     }
 
 private:
+    const int pixelSize;
+
     Model& model;
-    uint pixelSize;
     sf::RenderWindow win;
+    sf::View view;
 
     sf::Image img;
     sf::Texture texture;

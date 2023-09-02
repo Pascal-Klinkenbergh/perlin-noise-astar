@@ -132,8 +132,17 @@ public:
         return &(terrain[y][x]);
     }
 
-    void setStart(Point* p) { start = p; }
-    void setEnd(Point* p) { end = p; }
+    void setStart(Point* p) {
+        if (heap.size())  // clear if there is already a path
+            clearPathState();
+        start = p;
+    }
+
+    void setEnd(Point* p) {
+        if (heap.size())  // clear if there is already a path
+            clearPathState();
+        end = p;
+    }
 
     Point* getStart() { return start; }
     Point* getEnd() { return end; }

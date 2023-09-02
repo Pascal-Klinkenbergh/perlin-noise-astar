@@ -18,16 +18,3 @@ q - quit
 * sfml
 
 `make run` to start
-
-
-## Ideas
-
-* zoom in and see distance and heuristics
-
-* make lower levels faster traversible and upper slower
-
-* GUI for levels and perlin params
-
-* Step through path iterations manually
-
-* move model coordinate calc to window class

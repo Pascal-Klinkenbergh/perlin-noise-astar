@@ -51,7 +51,7 @@ public:
                 else if (point == model.getEnd())
                     img.setPixel(x, y, sf::Color::Red);
                 else {
-                    uchar colVal = (uchar)(point->height * 255);
+                    uint8_t colVal = (uchar)(point->height * 255);
                     sf::Color col(colVal, colVal, colVal);
 
                     // draw visited points in a greener shade
@@ -67,11 +67,8 @@ public:
         Model::Point* p = model.getBest();
         while (p) {
             if (p != model.getEnd() && p != model.getStart()) {
-                auto col = img.getPixel(p->x, p->y);
-                col.r *= 1.42f;
-                col.b = 255;
-                col.g = 80;
-                img.setPixel(p->x, p->y, col);
+                float factor = p->height;
+                img.setPixel(p->x, p->y, sf::Color(uint8_t(255 * factor), 90, uint8_t(255 * (1.f - factor))));
             }
             p = p->prev;
         }

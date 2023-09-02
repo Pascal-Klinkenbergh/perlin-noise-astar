@@ -152,7 +152,7 @@ private:
     uint octaves = 20;             // how many octaves
     double stepSize = 0.03;        // multiplier for x and y values, to reduce step size
     double persistence = 0.4;      // how much the value of the next octave is reduced
-    uint levels = 20;
+    uint levels = 14;
 
     const uint width, height;       // size of the terrain
     vector<vector<Point>> terrain;  // terrain itself

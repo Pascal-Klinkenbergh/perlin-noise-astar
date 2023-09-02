@@ -79,8 +79,45 @@ public:
         // draw sprite to screen buffer
         win.draw(sprite);
 
+        // draw info
+        if (drawInfo)
+            displayInfo();
+
         // final drawing to screen
         win.display();
+    }
+
+    void displayInfo() {
+        auto pt1 = win.mapPixelToCoords({0, 0});
+        auto pt2 = win.mapPixelToCoords({int(model.getWidth()) * pixelSize, int(model.getHeight()) * pixelSize});
+
+        int xLeft = pt1.x / pixelSize;
+        int xRight = pt2.x / pixelSize;
+
+        int yUpper = pt1.y / pixelSize;
+        int yLower = pt2.y / pixelSize;
+
+        if (xLeft < 0) xLeft = 0;
+        if (yUpper < 0) yUpper = 0;
+
+        if (xRight > model.getWidth() - 1) xRight = model.getWidth() - 1;
+        if (yLower > model.getHeight() - 1) yLower = model.getHeight() - 1;
+
+        // draw horizontal lines
+        for (int i = xLeft; i <= xRight; ++i) {
+            sf::Vertex line[] = {
+                sf::Vertex(sf::Vector2f(i * pixelSize, 0), sf::Color::Black),
+                sf::Vertex(sf::Vector2f(i * pixelSize, model.getHeight() * pixelSize), sf::Color::Black)};
+            win.draw(line, 2, sf::Lines);
+        }
+
+        // draw vertial lines
+        for (int i = yUpper; i <= yLower; ++i) {
+            sf::Vertex line[] = {
+                sf::Vertex(sf::Vector2f(0, i * pixelSize), sf::Color::Black),
+                sf::Vertex(sf::Vector2f(model.getWidth() * pixelSize, i * pixelSize), sf::Color::Black)};
+            win.draw(line, 2, sf::Lines);
+        }
     }
 
     void moveView(sf::Vector2f delta) {
@@ -93,7 +130,15 @@ public:
     }
 
     void adjustZoom(float delta) {
-        view.zoom(powf(1.1, -delta));
+        zoom *= powf(1.1, delta);
+
+        drawInfo = zoom < 0.1;
+
+        if (zoom < 0.01) zoom = 0.01;
+        if (zoom > 7.f) zoom = 7.f;
+
+        view.setSize(win.getDefaultView().getSize());
+        view.zoom(zoom);
         win.setView(view);
     }
 
@@ -104,6 +149,8 @@ public:
 private:
     const int pixelSize;
 
+    float zoom = 1.f;
+
     Model& model;
     sf::RenderWindow win;
     sf::View view;
@@ -111,4 +158,6 @@ private:
     sf::Image img;
     sf::Texture texture;
     sf::Sprite sprite;
+
+    bool drawInfo = false;
 };

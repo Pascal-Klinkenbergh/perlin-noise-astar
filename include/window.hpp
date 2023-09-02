@@ -55,9 +55,8 @@ public:
                     sf::Color col(colVal, colVal, colVal);
 
                     // draw visited points in a greener shade
-                    if (point->visited) {
-                        col.r *= 0.7;
-                    }
+                    if (point->visited)
+                        col.r *= 0.7f;
 
                     img.setPixel(x, y, col);
                 }
@@ -67,8 +66,13 @@ public:
         // draw best path
         Model::Point* p = model.getBest();
         while (p) {
-            if (p != model.getEnd() && p != model.getStart())
-                img.setPixel(p->x, p->y, sf::Color::Magenta);
+            if (p != model.getEnd() && p != model.getStart()) {
+                auto col = img.getPixel(p->x, p->y);
+                col.r *= 1.42f;
+                col.b = 255;
+                col.g = 80;
+                img.setPixel(p->x, p->y, col);
+            }
             p = p->prev;
         }
 

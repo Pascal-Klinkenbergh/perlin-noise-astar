@@ -188,7 +188,9 @@ private:
         // cluster terrain into levels
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
-                terrain[y][x].height = (int(terrain[y][x].height * levels)) / float(levels);
+                int step = int(terrain[y][x].height * levels);           // step is (int[0, levels])
+                if (step == levels) step = levels - 1;                   // int[0, levels-1]
+                terrain[y][x].height = float(step) / float(levels - 1);  // [0, 1]
             }
         }
     }
